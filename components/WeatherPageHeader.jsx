@@ -1,23 +1,31 @@
 import React from 'react'
-import { View, Text, ImageBackground, StyleSheet, TouchableOpacity, Pressable } from 'react-native'
+import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import Icon2 from 'react-native-vector-icons/Ionicons'
-import WeatherIcon from 'react-native-vector-icons/Feather'
+import WeatherIcon from 'react-native-vector-icons/Ionicons'
 
 
-const WeatherPageHeader = ({navigation, route, highLow, NWeather,Tmx,Tmn,SKY}) => {
+const WeatherPageHeader = ({navigation, route, NWeather,Tmx,Tmn,SKY}) => {
   console.log(SKY[0])
   const skyStatus =([])
-  if(SKY[0]==="1"){
-    skyStatus.push('sun')
-  }else{
-    skyStatus.push('cloud')
+  if(SKY[0].fcstValue === "1"&& Number(SKY[0].fcstTime)< 1900){
+    skyStatus.push('sunny-outline')
+  }else if(SKY[0].fcstValue === "3"&& Number(SKY[0].fcstTime)< 1900){
+    skyStatus.push('cloudy-night-outline')
+  }else if (SKY[0].fcstValue==="4"&& Number(SKY[0].fcstTime)< 1900){
+    skyStatus.push('cloudy-outline')
+  }else if (SKY[0].fcstValue==="1" && Number(SKY[0].fcstTime) >=2000){
+    skyStatus.push('moon-outline')
+  }else if (SKY[0].fcstValue==="3" && Number(SKY[0].fcstTime) >=2000){
+    skyStatus.push('cloudy-night-outline')
+  }else if (SKY[0].fcstValue==="4" && Number(SKY[0].fcstTime) >=2000){
+    skyStatus.push('cloudy-outline')
   }
   return  (
     <View style={styles.headerContainer}>
       <ImageBackground source={require('../assets/images/haeun.png')} style={styles.haeundaeImg} imageStyle={{opacity:0.75}}>
-        <View style={styles.headerIconBox}>
-            <TouchableOpacity onPress={()=>navigation.pop()}>
+        <View style={styles.headerIconBox}>el
+            <TouchableOpacity onPress={()=>navigation.push('InitialPage')}>
               <Icon name="chevron-small-left" size={45} color="#fff" />
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>navigation.push('SearchPage')}>
@@ -28,7 +36,7 @@ const WeatherPageHeader = ({navigation, route, highLow, NWeather,Tmx,Tmn,SKY}) =
             <Text style={styles.locationBigText}>{route[0]}</Text>
         </View>
         <View style={styles.temperatureBox}>
-          <WeatherIcon name={skyStatus} size={40} color="#fff" style={styles.sunIcon} />
+          <WeatherIcon name={skyStatus} size={45} color="#fff" style={styles.sunIcon} />
           <Text style={styles.temperatureBigText}>{NWeather[24].fcstValue}˚</Text>
         </View>
         <View style={styles.lowHigh}>

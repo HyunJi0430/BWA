@@ -72,6 +72,7 @@ const WeatherPage = ({navigation, route}) => {
             Temp.push(highLow[i]);
         }
     }
+  
     for(let i = 0 ;i<NWeather.length; i++){
       if(NWeather[i].category ==="T1H"){
         NWT1H.push(NWeather[i].fcstValue)
@@ -84,6 +85,7 @@ const WeatherPage = ({navigation, route}) => {
               Tmn.push(highLow[i].fcstValue);
           }
       }
+  
       for(let i = 0; i< highLow.length; i++){
         if(highLow[i].category ==="TMX"){
             Tmnx.push(highLow[i].fcstValue);
@@ -91,13 +93,14 @@ const WeatherPage = ({navigation, route}) => {
     }
 
     /**현재시간 아래 짜르기 */
-    const Btime = (dt.getHours())+"30" 
     const realTime=[]
+    const Btime = dt.getHours() + "30"
     for(let i=0 ; i<Temp.length; i++){
-        if(Temp[i].fcstTime > Btime ){
+        if(Temp[i].fcstTime > Btime){
           realTime.push(Temp[i]);
         }
       }
+
    /**하늘 상태 수집 */
     const SkyCode=[];
     const realSky =[];
@@ -108,9 +111,10 @@ const WeatherPage = ({navigation, route}) => {
     }
     for(let i=0; i<SkyCode.length; i++){
       if(SkyCode[i].fcstTime > Atime){
-        realSky.push(SkyCode[i].fcstValue)
+        realSky.push(SkyCode[i])
       }
     }
+    console.log(realSky)
 
   return  NWeather.length !== 0 && highLow.length !== 0 &&Beach.length !== 0 && tide.length !== 0 && NWeather.length !== 0 &&Temp.length !== 0 ? (
     <ScrollView>
@@ -120,17 +124,17 @@ const WeatherPage = ({navigation, route}) => {
       <TwoMiddleBox tide={tide} Beach={Beach} NWeather = {NWeather} CurrentTime={CurrentTime}/> 
     </ScrollView>
   ): (<View style={styles.loadingView}>
-        <Image source={require('../assets/images/Loading.gif')} style={{width:100,height:100}}/>
-        <Text>날씨정보를 불러오는 중입니다.</Text>  
-      </View>)
+    <Image source={require('../assets/images/Loading.gif')} style={{width:100,height:100}}/>
+    <Text>날씨정보를 불러오는 중입니다.</Text>  
+  </View>)
 }
 
 const styles = StyleSheet.create({
-  loadingView:{
-    width:'100%',
-    height:'100%',
-    alignItems:'center',
-    justifyContent:'center'
-  }
+loadingView:{
+width:'100%',
+height:'100%',
+alignItems:'center',
+justifyContent:'center'
+}
 })
 export default WeatherPage
