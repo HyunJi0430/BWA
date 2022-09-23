@@ -1,20 +1,19 @@
-import React from 'react'
+import React ,{ useState, useEffect}from 'react'
 import { ScrollView, View, Text, StyleSheet, BackHandler, ShadowPropTypesIOS } from 'react-native'
 import WeatherIcon from 'react-native-vector-icons/Feather'
+import axios from 'axios'
 
 
-
-const TodayTemperature = ({Temp, SKYcode}) => {
-//     const skycode = 1
-//     switch(skycode) {
-//       case 1:
-//           console.log('sun')
-//           break;
-//       default:
-//           console.log('cloud')
-//           break;
-//     }
-
+const TodayTemperature = ({Temp,realSky}) => {
+    
+    const skyCode = []
+    for(let i= 0; i< realSky.length; i++){
+        if(realSky[i]==="1"){
+            skyCode.push('sun')
+        }else{
+            skyCode.push('cloud')
+        }
+    }
 // //강수형태 (단기)
 //   const PTYcode = 4;
 
@@ -35,14 +34,13 @@ const TodayTemperature = ({Temp, SKYcode}) => {
 //         console.log('cloud-drizzle');
 //         break;
 //   }
-
  const List1 = () => {
     let arr = [];
-    Temp.map((x, index)=>{
+    Temp.map((id, index,id1)=>{
         arr.push(
-            <View style={styles.todayTempBox}>
+            <View style={styles.todayTempBox} key={index.toString()}>
                     <Text style={styles.clock}>{(Temp[index].fcstTime).substr(0,2)}:00</Text>
-                    <WeatherIcon name="sun" size={35} color="#fff" />
+                    <WeatherIcon name={skyCode[index]} size={35} color="#fff" />
                     <Text style={styles.smallTemp}>{Temp[index].fcstValue}˚</Text>
             </View>
         )
@@ -50,7 +48,7 @@ const TodayTemperature = ({Temp, SKYcode}) => {
     return arr;
  }
 
-  return Temp.length !== 0 ? (
+  return (
 
     <View style={styles.container}>
         <ScrollView 
@@ -61,7 +59,7 @@ const TodayTemperature = ({Temp, SKYcode}) => {
            
         </ScrollView>
     </View>
-  ): (<View><Text style={{fontSize: 100}}>로딩</Text></View>)
+  )
 }
 
 
@@ -70,7 +68,10 @@ const TodayTemperature = ({Temp, SKYcode}) => {
 const styles = StyleSheet.create({
     container:{
         height: 150,
-        margin: 15,
+        marginLeft: 10,
+        marginRight:10,
+        marginTop:20,
+        marginBottom:20,
         borderRadius: 10,  
         backgroundColor: '#B1C1D3',
         justifyContent:'center',

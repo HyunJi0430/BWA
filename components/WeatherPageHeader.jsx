@@ -5,14 +5,19 @@ import Icon2 from 'react-native-vector-icons/Ionicons'
 import WeatherIcon from 'react-native-vector-icons/Feather'
 
 
-const WeatherPageHeader = ({navigation, route, highLow, NWeather}) => {
-  
-
-  return NWeather.length !== 0 && highLow.length !== 0 ? (
+const WeatherPageHeader = ({navigation, route, highLow, NWeather,Tmx,Tmn,SKY}) => {
+  console.log(SKY[0])
+  const skyStatus =([])
+  if(SKY[0]==="1"){
+    skyStatus.push('sun')
+  }else{
+    skyStatus.push('cloud')
+  }
+  return  (
     <View style={styles.headerContainer}>
       <ImageBackground source={require('../assets/images/haeun.png')} style={styles.haeundaeImg} imageStyle={{opacity:0.75}}>
         <View style={styles.headerIconBox}>
-            <TouchableOpacity onPress={()=>navigation.push('InitialPage')}>
+            <TouchableOpacity onPress={()=>navigation.pop()}>
               <Icon name="chevron-small-left" size={45} color="#fff" />
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>navigation.push('SearchPage')}>
@@ -23,15 +28,15 @@ const WeatherPageHeader = ({navigation, route, highLow, NWeather}) => {
             <Text style={styles.locationBigText}>{route[0]}</Text>
         </View>
         <View style={styles.temperatureBox}>
-          <WeatherIcon name="sun" size={40} color="#fff" style={styles.sunIcon} />
+          <WeatherIcon name={skyStatus} size={40} color="#fff" style={styles.sunIcon} />
           <Text style={styles.temperatureBigText}>{NWeather[24].fcstValue}˚</Text>
         </View>
         <View style={styles.lowHigh}>
-          <Text style={styles.lowHighText}>{Math.round(highLow[84].fcstValue)}˚ / {Math.round(highLow[193].fcstValue)}˚</Text>
+          <Text style={styles.lowHighText}>{Math.round(Tmn)}˚ / {Math.round(Tmx)}˚</Text>
         </View>
       </ImageBackground>
     </View>
-  ): (<View><Text>로딩중</Text></View>)
+  )
 }
 
 

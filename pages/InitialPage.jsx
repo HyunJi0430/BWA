@@ -1,12 +1,13 @@
 import React from 'react'
-import { View, ScrollView, Text, TouchableOpacity, StatusBar, StyleSheet, ImageBackground } from 'react-native'
+import { View, ScrollView, Text, TouchableOpacity, StatusBar, StyleSheet, TextInput, ImageBackground } from 'react-native'
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const InitialPage = ({navigation}) => {
+    
   return (
     <ScrollView style={styles.bigContainer}>
-        <View style={styles.container}>
         <StatusBar />
+        <View style={styles.container}>
             <View style={styles.logoContainer}>
                 <View style={styles.logoBox}>
                     <Text style={styles.TextLogo}>BADADA</Text>
@@ -14,7 +15,7 @@ const InitialPage = ({navigation}) => {
                 </View>
                 <Text style={styles.logoUnder}>지금 가고싶은 해수욕장의 날씨와 정보를 한번에!</Text>
             </View>
-            <View style={styles.textInputContainer}>
+            <View style={styles.textInputConatainer}>
                 <TouchableOpacity style={styles.TextInput} onPress={()=>navigation.push('SearchPage')} >
                     <Text style={styles.SearchText}>내가 갈 해수욕장의 날씨가 궁금하다면? </Text>
                 </TouchableOpacity>
@@ -24,21 +25,25 @@ const InitialPage = ({navigation}) => {
             </View>
             <View style={styles.cardContainer}>
                 <View style={styles.Card}>    
-                    <TouchableOpacity onPress={()=>navigation.push('WeatherPage')}>
+                    <TouchableOpacity onPress={()=>navigation.push('WeatherPage',["해운대 해수욕장", 304])} >
                         <ImageBackground source={require('../assets/images/해운대.jpg')} resizeMode='cover' style={styles.CardImage} imageStyle={{ borderRadius: 15}}>
                             <Text style={styles.CardText}>해운대 해수욕장</Text>
                         </ImageBackground>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.Card}>
-                    <ImageBackground source={require('../assets/images/속초.jpg')} resizeMode='cover' style={styles.CardImage} imageStyle={{ borderRadius: 15}}>
-                        <Text style={styles.CardText}>속초 해수욕장</Text>
-                    </ImageBackground>
+                    <TouchableOpacity onPress={()=>navigation.push('WeatherPage',["속초 해수욕장", 201])} >
+                        <ImageBackground source={require('../assets/images/속초.jpg')} resizeMode='cover' style={styles.CardImage} imageStyle={{ borderRadius: 15}}>
+                            <Text style={styles.CardText}>속초 해수욕장</Text>
+                        </ImageBackground>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.Card}>
-                    <ImageBackground source={require('../assets/images/을왕리.jpg')} resizeMode='cover' style={styles.CardImage} imageStyle={{ borderRadius: 15}}>
-                        <Text style={styles.CardText}>을왕리 해수욕장</Text>
-                    </ImageBackground>
+                    <TouchableOpacity onPress={()=>navigation.push('WeatherPage',["을왕리 해수욕장", 1])}>
+                        <ImageBackground source={require('../assets/images/을왕리.jpg')} resizeMode='cover' style={styles.CardImage} imageStyle={{ borderRadius: 15}}>
+                            <Text style={styles.CardText}>을왕리 해수욕장</Text>
+                        </ImageBackground>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
@@ -54,18 +59,18 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     container:{
-        marginLeft:'10%',
-        marginRight:'10%',
-        marginTop:'13%',
-        marginBottom: '13%'
+        marginLeft:50,
+        marginRight:50,
+        marginTop:50
     },
     logoContainer:{
         height: 150,
         alignItems:'center',
         justifyContent:'center',
+        // backgroundColor: '#ddd'
     },
     logoBox:{
-        flexDirection:'row'
+        flexDirection:'row',
     },
     TextLogo:{
         fontSize:45,
@@ -76,7 +81,7 @@ const styles = StyleSheet.create({
         color: '#6383A6',
         fontSize: 13
     },
-    textInputContainer:{
+    textInputConatainer:{
         marginBottom:20,
         alignItems:'center'
     },

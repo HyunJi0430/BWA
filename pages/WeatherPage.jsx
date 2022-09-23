@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react'
-import { ScrollView, StatusBar } from 'react-native'
+import { ScrollView, StatusBar,View,Text ,Image, StyleSheet} from 'react-native'
 import WeatherPageHeader from '../components/WeatherPageHeader'
 import TodayTemperature from '../components/TodayTemperature'
 import TwoMiddleBox from '../components/TwoMiddleBox'
@@ -8,7 +8,6 @@ import axios from 'axios'
 
 const WeatherPage = ({navigation, route}) => {
   // console.log(route.params)
-
   const dt = new Date();
   const CurrentTime = (dt.getHours())+":"+dt.getMinutes()+":"+dt.getSeconds()
   const year = dt.getFullYear();
@@ -26,23 +25,30 @@ const WeatherPage = ({navigation, route}) => {
   
   const [Beach, setBeach] = useState([])
   const [tide, setTide] = useState([])
-  const [SKYcode,setSkyCode] = useState([]);
-  const[Temp,setTemp] = useState([]);
+  const Temp = [];
+  const NWT1H = [];
+  const Tmn = [];
+  const Tmnx = [];
 
   /**헤더페이지 */
           useEffect(()=>{
             const WPa = async ()=>{
                 const NWeather = await axios.get(`http://apis.data.go.kr/1360000/BeachInfoservice/getUltraSrtFcstBeach?beach_num=${route.params[1]}&base_date=${dateString}&base_time=${Atime}&ServiceKey=${serviceKey}&dataType=JSON&numOfRows=100`);
-                // console.log(NWeather);
+                // console.log(NWeather.data.response.body.items.item);
                 setNWeather(NWeather.data.response.body.items.item);
               }
-            const WPb = async ()=>{
-                const highLow = await axios.get(`http://apis.data.go.kr/1360000/BeachInfoservice/getVilageFcstBeach?beach_num=${route.params[1]}&base_date=${baseDate}&base_time=2300&ServiceKey=${serviceKey}&dataType=JSON&numOfRows=279`);
-                // console.log(highLow);
-                setHighLow(highLow.data.response.body.items.item);
-              } 
-              WPa(),WPb()
+
+              WPa()
           },[]);
+          useEffect(()=>{
+            const WPb = async ()=>{
+              const highLow = await axios.get(`http://apis.data.go.kr/1360000/BeachInfoservice/getVilageFcstBeach?beach_num=${route.params[1]}&base_date=${dateString}&base_time=0210&ServiceKey=${serviceKey}&dataType=JSON&numOfRows=290`);
+              // console.log(highLow.data.response.body.items.item);
+              setHighLow(highLow.data.response.body.items.item);
+            } 
+            WPb()
+          },[])
+          
   /**가운데 박스 */
             useEffect(()=>{
               const a = async ()=>{
@@ -50,39 +56,81 @@ const WeatherPage = ({navigation, route}) => {
                   // console.log(Beach.data.result.data);
                   setBeach(Beach.data.result.data)
                 }
-              const b = async ()=>{
-                  const tide = await axios.get(` http://www.khoa.go.kr/api/oceangrid/tideObsPreTab/search.do?ServiceKey=${serviceKey1}&ObsCode=DT_0061&Date=20220904&ResultType=json`)
-                  // console.log(tide)
-                  setTide(tide.data.result.data)
-              }
-              a(),b()
+              a()
           },[]);
-
-          useEffect (()=>{
-  
-          },[]);
-
-          for(let i= 0 ; i< highLow.length; i++){
-            if(highLow[i].category ==="TMP"){
-                Temp.push(highLow[i]);
-            }
+          useEffect(()=>{
+            const b = async ()=>{
+              const tide = await axios.get(` http://www.khoa.go.kr/api/oceangrid/tideObsPreTab/search.do?ServiceKey=${serviceKey1}&ObsCode=DT_0061&Date=20220904&ResultType=json`)
+              // console.log(tide)
+              setTide(tide.data.result.data)
+          }
+          b()
+          },[])
+    /**기온만 수집 */
+      for(let i= 0 ; i< highLow.length; i++){
+        if(highLow[i].category ==="TMP"){
+            Temp.push(highLow[i]);
         }
-    
-        for(let i= 0 ; i< highLow.length; i++){
-            if(highLow[i].category==="SKY"){
-                SKYcode.push(highLow[i]);
-            }
-        }
+    }
+    for(let i = 0 ;i<NWeather.length; i++){
+      if(NWeather[i].category ==="T1H"){
+        NWT1H.push(NWeather[i].fcstValue)
+      }
+    }
 
-  return (
+    /**최고 최저 기온 */
+        for(let i = 0; i< highLow.length; i++){
+          if(highLow[i].category ==="TMN"){
+              Tmn.push(highLow[i].fcstValue);
+          }
+      }
+      for(let i = 0; i< highLow.length; i++){
+        if(highLow[i].category ==="TMX"){
+            Tmnx.push(highLow[i].fcstValue);
+        }
+    }
+
+    /**현재시간 아래 짜르기 */
+    const Btime = (dt.getHours())+"30" 
+    const realTime=[]
+    for(let i=0 ; i<Temp.length; i++){
+        if(Temp[i].fcstTime > Btime ){
+          realTime.push(Temp[i]);
+        }
+      }
+   /**하늘 상태 수집 */
+    const SkyCode=[];
+    const realSky =[];
+    for(let i = 0; i <highLow.length; i++){
+      if(highLow[i].category ==="SKY"){
+        SkyCode.push(highLow[i])
+      }
+    }
+    for(let i=0; i<SkyCode.length; i++){
+      if(SkyCode[i].fcstTime > Atime){
+        realSky.push(SkyCode[i].fcstValue)
+      }
+    }
+
+  return  NWeather.length !== 0 && highLow.length !== 0 &&Beach.length !== 0 && tide.length !== 0 && NWeather.length !== 0 &&Temp.length !== 0 ? (
     <ScrollView>
       <StatusBar/>
-      <WeatherPageHeader navigation={navigation} route={route.params} NWeather = {NWeather} highLow = {highLow} /> 
-      <TodayTemperature  Temp={Temp} SKYcode={SKYcode} />
-      <TwoMiddleBox  route={route.params} tide={tide} Beach={Beach} NWeather = {NWeather} CurrentTime={CurrentTime}/> 
+      <WeatherPageHeader navigation={navigation} route={route.params} NWeather = {NWeather} highLow = {highLow} Tmx={Tmnx} Tmn={Tmn} SKY={realSky}/> 
+      <TodayTemperature  Temp={realTime} realSky={realSky}/>
+      <TwoMiddleBox tide={tide} Beach={Beach} NWeather = {NWeather} CurrentTime={CurrentTime}/> 
     </ScrollView>
-  )
+  ): (<View style={styles.loadingView}>
+        <Image source={require('../assets/images/Loading.gif')} style={{width:100,height:100}}/>
+        <Text>날씨정보를 불러오는 중입니다.</Text>  
+      </View>)
 }
 
-
+const styles = StyleSheet.create({
+  loadingView:{
+    width:'100%',
+    height:'100%',
+    alignItems:'center',
+    justifyContent:'center'
+  }
+})
 export default WeatherPage
